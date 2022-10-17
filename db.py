@@ -39,8 +39,11 @@ def SelectAll ():
     cur.execute("SELECT * FROM test_table")
     rows = cur.fetchall()
 
+    data_all = []
     for row in rows:
-        print (row)
         json.dumps(row)
+        data_all.append(row)
+
+    return data_all
 
 

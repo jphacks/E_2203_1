@@ -1,4 +1,5 @@
 import mysql.connector as mydb
+import json
 
 # コネクションの作成
 conn = mydb.connect(
@@ -28,18 +29,18 @@ def dbinit():
 
 def insert(id, name, price):
     cur = conn.cursor()
-    cur.execute("INSERT INTO test_table(id, name, price) VALUES (%d, %s, %d);")
-    seqs = [
-        (id, name, price)
+    records = [
+    (id, name, price)
     ]
+    cur.executemany("INSERT INTO test_table VALUES (%s, %s, %s)", records)
 
 def SelectAll ():
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM test_table ORDER BY id ASC")
+    cur = conn.cursor(dictionary=True)
+    cur.execute("SELECT * FROM test_table")
     rows = cur.fetchall()
 
     for row in rows:
-        print(row)
-
+        print (row)
+        json.dumps(row)
 
 

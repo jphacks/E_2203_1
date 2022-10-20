@@ -21,14 +21,16 @@ services:
       MYSQL_DATABASE: db
       # MYSQL_USER: user
       # MYSQL_PASSWORD: pass
-    # volumes:
-    #  - ./data:/var/lib/mysql
+      # volumes:
+      #  - ./data:/var/lib/mysql
 
   python-main:
     image: jp-hacks-python-main
-    build: ./db
+    build: ./main/
     container_name: jp-main
     ports: 
       - 80:80
     environment:
       MYSQL_ROOT_PASSWORD: pass
+    depends_on:
+      - mysql

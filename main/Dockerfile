@@ -1,7 +1,8 @@
 FROM python
 
-VOLUME ./work/ /app
+WORKDIR /app
+COPY ./work/ app/
 
 RUN pip install Flask
 
-CMD ["python", "test.py"]
+# CMD ["python", "test.py"]

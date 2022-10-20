@@ -5,18 +5,23 @@ import json
 import urllib.parse
 import urllib.request
 
-f = open("pickle_A", "rb")
-reqbody = f.read()
-f.close
 
-url = "http://localhost:5000/pickle"
+def main():
+    with open("model.pickle"):
+        reqbody = f.read()
 
-req = urllib.request.Request(
-    url,
-    reqbody,
-    method="POST",
-    headers={"Content-Type": "application/octet-stream"},
-)
+    url = "http://jp-main/pickle"
 
-with urllib.request.urlopen(req) as res:
-    print(json.loads(res.read()))
+    req = urllib.request.Request(
+        url,
+        reqbody,
+        method="POST",
+        headers={"Content-Type": "application/octet-stream"},
+    )
+
+    with urllib.request.urlopen(req):
+        pass
+    
+
+if __name__ == "__main__":
+    main()

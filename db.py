@@ -1,5 +1,7 @@
 import mysql.connector as mydb
 import json
+import pandas as pd
+from model_c import engine
 
 # コネクションの作成
 conn = mydb.connect(
@@ -22,17 +24,16 @@ def dbinit():
     cur.execute("DROP TABLE IF EXISTS `test_table`")
     cur.execute("""CREATE TABLE IF NOT EXISTS `test_table` (
     `id` int(11) NOT NULL,
-    `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `price` int(11) NOT NULL,
+    `state` int(11) NOT NULL,
     PRIMARY KEY (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci""")
 
-def insert(id, name, price):
+def insert(menu, id, temp, month):
     cur = conn.cursor()
     records = [
-    (id, name, price)
+    (menu, id, temp, month)
     ]
-    cur.executemany("INSERT INTO test_table VALUES (%s, %s, %s)", records)
+    cur.executemany("INSERT INTO test_table VALUES (%s, %s, %s, %s)", records)
 
 def SelectAll ():
     cur = conn.cursor(dictionary=True)
@@ -40,10 +41,16 @@ def SelectAll ():
     rows = cur.fetchall()
 
     data_all = []
+    
     for row in rows:
         json.dumps(row)
         data_all.append(row)
 
     return data_all
+
+def SelectOne (id):
+    query = "select * from db where u_id = {%s}", id
+    df = pd.read_sql(query,con = engine)
+    return df
 
 

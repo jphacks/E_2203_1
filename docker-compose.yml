@@ -34,3 +34,4 @@ services:
       MYSQL_ROOT_PASSWORD: pass
     depends_on:
       - mysql
+

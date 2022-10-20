@@ -1,11 +1,11 @@
-USE db;
+USE jp-db;
 
 DROP TABLE IF EXISTS state;
 DROP TABLE IF EXISTS dish;
 
 CREATE TABLE state
 (
-  id             INT,
+  id             INT PRIMARY KEY,
   month          INT,
   steps          INT,
   temprature   FLOAT,
@@ -15,12 +15,8 @@ CREATE TABLE state
   dish_id        INT
 );
 
-
 CREATE TABLE dish
 (
-    id          INT,
-    dish    VARCHAR
-
+    id      INT PRIMARY KEY,
+    dish    VARCHAR(100)
 );
-
-

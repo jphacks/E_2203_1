@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import pandas as pd
 import mysql.connector as mydb
-from db import SelectOne, insert, dbinit
+from main.work.db import SelectOne, insert, dbinit
 import pickle
 
 app = Flask(__name__)
@@ -23,6 +23,7 @@ def model_a():
     temp = json['temp']
     month = json['month']
 
+    #id = -1がきたら新しいIDをつける
     if id == -1:
         id = i + 1
 
@@ -33,7 +34,8 @@ def model_a():
 
     rank.append(model_A(df))
 
-    df_B = SelectOne()#dfでdbからとってくる
+    #dfでdbからとってくる
+    df_B = SelectOne()
 
     rank.append(model_B(df))
 
@@ -50,6 +52,8 @@ def post_json():
     id = json['id']
     temp = json['temp']
     month = json['month']
+
+
 
     if id == -1:
         id = i + 1

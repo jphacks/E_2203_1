@@ -1,7 +1,7 @@
 import mysql.connector as mydb
 import json
 import pandas as pd
-from model_c import engine
+from make_model.work.model_c import engine
 
 # コネクションの作成
 conn = mydb.connect(
@@ -35,6 +35,7 @@ def insert(menu, id, temp, month):
     ]
     cur.executemany("INSERT INTO test_table VALUES (%s, %s, %s, %s)", records)
 
+#SelectAll多分使わない
 def SelectAll ():
     cur = conn.cursor(dictionary=True)
     cur.execute("SELECT * FROM test_table")
@@ -49,7 +50,7 @@ def SelectAll ():
     return data_all
 
 def SelectOne (id):
-    query = "select * from db where u_id = {%s}", id
+    query = "select from test_table where id = {%s}", id  #変数いれたい
     df = pd.read_sql(query,con = engine)
     return df
 

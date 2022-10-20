@@ -1,3 +1,6 @@
+#これ実行したらpickleをサーバーに渡せるようにしたい
+#cronで定期実行できる？
+
 import json
 import urllib.parse
 import urllib.request

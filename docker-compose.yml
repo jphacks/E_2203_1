@@ -5,6 +5,8 @@ services:
     image: jp-hacks-python-model
     build: ./make_model/
     container_name: jp-model
+    volumes:
+      - ./make_model/work/:/app/
     environment:
       MYSQL_ROOT_PASSWORD: pass
     expose: 
@@ -34,6 +36,8 @@ services:
     image: jp-hacks-python-main
     build: ./main/
     container_name: jp-main
+    volumes:
+      - ./main/work/:/app/
     ports: 
       - 80:80
     environment:

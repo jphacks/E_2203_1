@@ -1,7 +1,8 @@
 import mysql.connector as mydb
 import json
-#import pandas as pd
-#from make_model.work.send_model import engine
+import sqlalchemy as sa
+import pandas as pd
+
 
 # コネクションの作成
 conn = mydb.connect(
@@ -14,30 +15,32 @@ conn = mydb.connect(
 # コネクションが切れた時に再接続してくれるよう設定
 conn.ping(reconnect=True)
 
-print(conn.is_connected())
+url = 'mysql+pymysql://user:pass@localhost:3306/db?charset=utf8'
+engine = sa.create_engine(url, echo=False)
 
-def Insert(id, month, steps, temp, latitude, longitude, time, dish_id):
+
+def make_df(user_id):
+    query = f"select * from situations where user_id = {user_id}"
+    df = pd.read_sql(query, con=engine)
+
+    return df
+
+
+def insert(user_id, month, temp, latitude, longitude, time, dish_id):
     cur = conn.cursor()
     # (id, month, steps, temp, latitude, longitude, time, dish_id)
-    sql = ("INSERT INTO state (id, month, steps, temprature, latitude, longitude, time_hour, dish_id)VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+    sql = (
+        "INSERT INTO situations (user_id, month, temprature, latitude, longitude, time_hour, dish_id)VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-    cur.execute(sql, (id, month, steps, temp, latitude, longitude, time, dish_id))
+    cur.execute(sql, (user_id, month, temp, latitude, longitude, time, dish_id))
 
     conn.commit()
 
-# def Dish_Insert(id, month):
-#     cur = conn.cursor()
-#     # (id, month, steps, temp, latitude, longitude, time, dish_id)
-#     sql = ("INSERT INTO dish (id, dish)VALUES (%s, %s)")
 
-#     cur.execute(sql, (id, month))
-
-#     conn.commit()
-
-def Select_user(userid):
-    data_history= []
+def select_user(userid):
+    data_history = []
     cur = conn.cursor()
-    cur.executemany("select from state where userid = (%s)", (userid))
+    cur.executemany("select * from state where userid = (%s)", (userid))
     rows = cur.fetchall()
 
     for row in rows:
@@ -46,14 +49,13 @@ def Select_user(userid):
     return data_history
 
 
-def Select_dish(dish_id):
-    menu = []
+def select_dish() -> dict:
+    menu = {}
     cur = conn.cursor()
-    cur.executemany("select from dish where id = (%s)", (dish_id))
+    cur.executemany("select * from dish")
     rows = cur.fetchall()
 
     for row in rows:
-        menu = json.dumps(row)
+        menu[row[0]] = row[1]
+
     return menu
-
-

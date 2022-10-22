@@ -1,13 +1,18 @@
-from datetime import timedelta
-from flask import Flask, request, jsonify, session
 import pickle
+import modelA
+import modelB
+
+from datetime import timedelta
+
+from flask import Flask, request, jsonify, session
+
 # import pandas as pd
 # import mysql.connector as mydb
 # from main.work.db import SelectOne, insert, dbinit
 
 app = Flask(__name__)
-app.secret_key = "secret"
-app.permanent_session_lifetime = timedelta(days=5)
+model_a = None
+model_b = None
 
 # app.config['JSON_AS_ASCII'] = False
 # datas = [
@@ -69,9 +74,19 @@ app.permanent_session_lifetime = timedelta(days=5)
 
 @app.route('/model', methods=['POST'])
 def post_pickle():
-    model = pickle.loads(request.get_data())
-    session["model"] = model
+    global model_a
+    global model_b
+
+    models_dict = pickle.loads(request.get_data())
+
+    model_a = models_dict['model_a']
+    model_b = models_dict['model_b']
     return jsonify({'massage': 'OK'}), 200
+
+@app.route('test')
+def test():
+    print(model_a)
+    return "OK"
 
 
 if __name__ == '__main__':

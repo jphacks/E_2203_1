@@ -12,6 +12,7 @@ services:
     tty: true
     depends_on:
       - mysql
+      - python-main
 
 
   mysql:

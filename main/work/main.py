@@ -2,25 +2,18 @@ import pickle
 
 import pandas as pd
 
-import modelA
-import modelB
-
 from datetime import timedelta
 
 from flask import Flask, request, jsonify, session
 
-# from datetime import timedelta
-from flask import Flask, request, jsonify  # , session
-# import pickle
-# import pandas as pd
-import json
-# from pandas import json_normalize
 import db
+import modelA
+import modelB
 
 app = Flask(__name__)
-user = []
 model_a = None
 model_b = None
+user = [1,2,3,4,5,6,7,8,9,10]
 
 
 @app.route('/recommend', methods=['GET'])
@@ -71,10 +64,14 @@ def post_json():
 
 @app.route('/create_user', methods=['GET'])
 def create_user():
-    user_id = len(user)
-    user.append(user_id)
+    j_data = request.get_json()
 
-    return jsonify({"user_id", user_id})
+    user_id = j_data['user_id']
+    if user_id == -1:
+        user.append(user_id)
+        user_id = len(user)
+
+    return jsonify({"user_id": user_id})
 
 
 @app.route('/model', methods=['POST'])

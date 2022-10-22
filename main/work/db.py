@@ -1,8 +1,6 @@
 import mysql.connector as mydb
-import json
 import sqlalchemy as sa
 import pandas as pd
-
 
 # コネクションの作成
 conn = mydb.connect(
@@ -29,30 +27,16 @@ def make_df(user_id):
 def insert(user_id, month, temp, latitude, longitude, time, dish_id):
     cur = conn.cursor()
     # (id, month, steps, temp, latitude, longitude, time, dish_id)
-    sql = (
-        "INSERT INTO situations (user_id, month, temprature, latitude, longitude, time_hour, dish_id)VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+    sql = ("INSERT INTO situations (user_id, month, temperature, latitude, longitude, time_hour, dish_id)VALUES (%s, %s, %s, %s, %s, %s, %s)")
 
     cur.execute(sql, (user_id, month, temp, latitude, longitude, time, dish_id))
 
     conn.commit()
 
-
-def select_user(userid):
-    data_history = []
-    cur = conn.cursor()
-    cur.executemany("select * from state where userid = (%s)", (userid))
-    rows = cur.fetchall()
-
-    for row in rows:
-        json.dumps(row)
-        data_history.append(row)
-    return data_history
-
-
 def select_dish() -> dict:
     menu = {}
     cur = conn.cursor()
-    cur.executemany("select * from dish")
+    cur.execute("select * from dish")
     rows = cur.fetchall()
 
     for row in rows:

@@ -11,5 +11,6 @@ RUN pip install requests
 RUN pip install xgboost
 RUN pip install scikit-learn
 RUN pip install numpy
+RUN pip install PyMySQL
 
  CMD ["python", "main.py"]

@@ -1,57 +1,59 @@
 import mysql.connector as mydb
 import json
-import pandas as pd
-from make_model.work.model_c import engine
+#import pandas as pd
+#from make_model.work.send_model import engine
 
 # コネクションの作成
 conn = mydb.connect(
-    host='127.0.0.1',
+    host='jp-mysql',
     port='3306',
-    user='user',
+    user='root',
     password='pass',
-    database='db'
-)
+    database='jp-db')
 
 # コネクションが切れた時に再接続してくれるよう設定
 conn.ping(reconnect=True)
 
-# 接続できているかどうか確認
 print(conn.is_connected())
 
-def dbinit():
+def Insert(id, month, steps, temp, latitude, longitude, time, dish_id):
     cur = conn.cursor()
+    # (id, month, steps, temp, latitude, longitude, time, dish_id)
+    sql = ("INSERT INTO state (id, month, steps, temprature, latitude, longitude, time_hour, dish_id)VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-    cur.execute("DROP TABLE IF EXISTS `test_table`")
-    cur.execute("""CREATE TABLE IF NOT EXISTS `test_table` (
-    `id` int(11) NOT NULL,
-    `state` int(11) NOT NULL,
-    PRIMARY KEY (id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci""")
+    cur.execute(sql, (id, month, steps, temp, latitude, longitude, time, dish_id))
 
-def insert(menu, id, temp, month):
+    conn.commit()
+
+# def Dish_Insert(id, month):
+#     cur = conn.cursor()
+#     # (id, month, steps, temp, latitude, longitude, time, dish_id)
+#     sql = ("INSERT INTO dish (id, dish)VALUES (%s, %s)")
+
+#     cur.execute(sql, (id, month))
+
+#     conn.commit()
+
+def Select_user(userid):
+    data_history= []
     cur = conn.cursor()
-    records = [
-    (menu, id, temp, month)
-    ]
-    cur.executemany("INSERT INTO test_table VALUES (%s, %s, %s, %s)", records)
-
-#SelectAll多分使わない
-def SelectAll ():
-    cur = conn.cursor(dictionary=True)
-    cur.execute("SELECT * FROM test_table")
+    cur.executemany("select from state where userid = (%s)", (userid))
     rows = cur.fetchall()
 
-    data_all = []
-    
     for row in rows:
         json.dumps(row)
-        data_all.append(row)
+        data_history.append(row)
+    return data_history
 
-    return data_all
 
-def SelectOne (id):
-    query = "select from test_table where id = {%s}", id  #変数いれたい
-    df = pd.read_sql(query,con = engine)
-    return df
+def Select_dish(dish_id):
+    menu = []
+    cur = conn.cursor()
+    cur.executemany("select from dish where id = (%s)", (dish_id))
+    rows = cur.fetchall()
+
+    for row in rows:
+        menu = json.dumps(row)
+    return menu
 
 
